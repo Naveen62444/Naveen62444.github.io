@@ -169,3 +169,25 @@ if(!reduceMotion){const selector='h1,h2,h3,h4,p:not(.eyebrow):not(.open),li,.met
   y.addEventListener('click',()=>send('y'));
   n.addEventListener('click',()=>send('n'));
 })();
+
+
+// Real mobile keyboard bridge for the Y/N terminal gate.
+(() => {
+  const input=document.getElementById('mobile-terminal-input');
+  const submit=document.getElementById('mobile-terminal-submit');
+  const prompt=document.getElementById('cmd-prompt');
+  if(!input||!submit||!prompt)return;
+  function send(){
+    const value=(input.value||'').trim().toLowerCase();
+    if(value!=='y'&&value!=='n'){
+      input.value=''; input.placeholder='Y or N'; input.focus(); return;
+    }
+    window.dispatchEvent(new KeyboardEvent('keydown',{key:value,bubbles:true,cancelable:true}));
+    if(value==='n'){setTimeout(()=>{input.value='';input.focus();},650)}else input.blur();
+  }
+  input.addEventListener('input',()=>{input.value=input.value.slice(-1).toUpperCase();});
+  input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();send();}});
+  submit.addEventListener('click',send);
+  // User tap on the prompt focuses the actual input and opens the phone keyboard.
+  prompt.addEventListener('click',e=>{if(e.target!==submit){input.focus();}});
+})();
