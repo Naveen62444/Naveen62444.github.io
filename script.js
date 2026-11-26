@@ -158,3 +158,14 @@ if(!reduceMotion){const selector='h1,h2,h3,h4,p:not(.eyebrow):not(.open),li,.met
 })();
 
 (()=>{if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;const map={English:'English',Hindi:'हिन्दी',Telugu:'తెలుగు',Tamil:'தமிழ்',French:'Français'},cards=[...document.querySelectorAll('.language-card')],positions=[['69%','72%','-5deg'],['83%','29%','3deg'],['63%','38%','-2deg'],['79%','76%','4deg'],['57%','27%','-4deg']];cards.forEach((card,index)=>{const h=card.querySelector('h3');if(!h)return;const english=h.textContent.trim();h.dataset.english=english;h.dataset.native=map[english]||english;const[x,y,r]=positions[index%positions.length];card.style.setProperty('--script-x',x);card.style.setProperty('--script-y',y);card.style.setProperty('--script-r',r)});const sleep=ms=>new Promise(r=>setTimeout(r,ms));async function write(el,text,speed){el.textContent='';el.classList.add('language-typing');for(let i=1;i<=text.length;i++){el.textContent=text.slice(0,i);await sleep(speed)}el.classList.remove('language-typing')}async function erase(el,speed){el.classList.add('language-typing');while(el.textContent.length){el.textContent=el.textContent.slice(0,-1);await sleep(speed)}el.classList.remove('language-typing')}async function animate(card){if(card.dataset.langDone)return;card.dataset.langDone='1';const h=card.querySelector('h3');await write(h,h.dataset.native,72);await sleep(400);await erase(h,36);await sleep(110);await write(h,h.dataset.english,56);h.classList.add('language-complete')}const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){animate(e.target);io.unobserve(e.target)}}),{threshold:.25});cards.forEach(c=>io.observe(c))})();
+
+
+// Mobile startup controls: touch keyboards do not open for non-editable terminal text,
+// so Y/N buttons trigger the exact same keyboard path as desktop.
+(() => {
+  const y=document.getElementById('mobile-y'),n=document.getElementById('mobile-n');
+  if(!y||!n)return;
+  const send=key=>window.dispatchEvent(new KeyboardEvent('keydown',{key,bubbles:true,cancelable:true}));
+  y.addEventListener('click',()=>send('y'));
+  n.addEventListener('click',()=>send('n'));
+})();

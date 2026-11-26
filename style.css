@@ -207,3 +207,7 @@ body.portal-locked{overflow:hidden}.portal-intro{position:fixed;inset:0;z-index:
 
 /* Startup only once per browser tab/session */
 html.skip-startup #portal-intro{display:none!important}html.skip-startup body{overflow:auto!important}
+
+
+/* Mobile Y/N controls for the CMD startup */
+.mobile-yn{display:none;margin-top:16px;gap:12px}.mobile-yn button{appearance:none;min-width:64px;padding:10px 18px;border:1px solid #4b6755;background:#020705;color:#9dffb7;font:700 1rem Consolas,ui-monospace,monospace;border-radius:4px}.mobile-yn button:active,.mobile-yn button:focus-visible{border-color:#79ffab;box-shadow:0 0 14px rgba(121,255,171,.25);outline:none}.mobile-yn #mobile-n{color:#ff7c82;border-color:#6c4448}@media(max-width:760px),(pointer:coarse){.mobile-yn{display:flex}.cmd-prompt{display:flex;flex-wrap:wrap;align-items:center;gap:2px}.cmd-prompt[hidden]{display:none!important}.mobile-yn{flex-basis:100%}}
