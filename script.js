@@ -1,3 +1,6 @@
+// Startup replay guard
+let naveenStartupSeen=false;try{naveenStartupSeen=sessionStorage.getItem('naveenPortfolioEntered')==='1';}catch(e){}
+if(naveenStartupSeen){const startup=document.getElementById('portal-intro');if(startup)startup.remove();document.body&&document.body.classList.remove('portal-locked');}
 const menuButton=document.querySelector('.menu-toggle'),navLinks=document.querySelector('.nav-links');if(menuButton&&navLinks)menuButton.addEventListener('click',()=>{const open=navLinks.classList.toggle('open');menuButton.setAttribute('aria-expanded',String(open))});const currentPage=location.pathname.split('/').pop()||'index.html';document.querySelectorAll('.nav-links a').forEach(a=>{if(a.getAttribute('href')===currentPage)a.classList.add('active')});const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 document.querySelectorAll('.brand-expand').forEach(brand=>{const target=brand.querySelector('.typed-name');if(!target)return;const text=target.dataset.text||'Naveen Pilla';let timer,run=0;const reset=()=>{run++;clearTimeout(timer);target.textContent='';brand.classList.remove('typing','typed')};const type=()=>{reset();const id=run;brand.classList.add('typing');if(reduceMotion){target.textContent=text;brand.classList.remove('typing');brand.classList.add('typed');return}let i=0;const tick=()=>{if(id!==run)return;target.textContent=text.slice(0,++i);if(i<text.length)timer=setTimeout(tick,text[i-1]===' '?90:72);else{brand.classList.remove('typing');brand.classList.add('typed')}};timer=setTimeout(tick,90)};brand.addEventListener('mouseenter',type);brand.addEventListener('mouseleave',reset);brand.addEventListener('focus',type);brand.addEventListener('blur',reset)});
@@ -104,12 +107,12 @@ if(!reduceMotion){const selector='h1,h2,h3,h4,p:not(.eyebrow):not(.open),li,.met
     if(target.startsWith('[IP] Checking IP address')) wrong=target.replace('address','adress');
     const first=wrong||target;
     let i=0;
-    const forwardSpeed=target.length>72?5:target.length>42?7:11;
+    const forwardSpeed=target.length>72?3:target.length>42?5:8;
     const typeForward=()=>{
       span.textContent=first.slice(0,++i);
       if(i<first.length){setTimeout(typeForward,forwardSpeed);return;}
       if(!wrong){done();return;}
-      setTimeout(()=>eraseToDifference(span,wrong,target,done),210);
+      setTimeout(()=>eraseToDifference(span,wrong,target,done),130);
     };
     typeForward();
   }
@@ -117,13 +120,13 @@ if(!reduceMotion){const selector='h1,h2,h3,h4,p:not(.eyebrow):not(.open),li,.met
     let common=0;while(common<wrong.length&&common<target.length&&wrong[common]===target[common])common++;
     let shown=wrong;
     const erase=()=>{
-      if(shown.length>common){shown=shown.slice(0,-1);span.textContent=shown;setTimeout(erase,24);}
-      else setTimeout(()=>rewrite(),90);
+      if(shown.length>common){shown=shown.slice(0,-1);span.textContent=shown;setTimeout(erase,16);}
+      else setTimeout(()=>rewrite(),55);
     };
     let j=common;
     const rewrite=()=>{
       span.textContent=target.slice(0,++j);
-      if(j<target.length)setTimeout(rewrite,9);else done();
+      if(j<target.length)setTimeout(rewrite,6);else done();
     };
     erase();
   }
@@ -131,7 +134,7 @@ if(!reduceMotion){const selector='h1,h2,h3,h4,p:not(.eyebrow):not(.open),li,.met
     if(li>=lines.length){prompt.hidden=false;const help=document.createElement('div');help.className='startup-help';help.textContent='Type Y or N on your keyboard. Enter / Space / Scroll are locked until Y is accepted.';prompt.after(help);return;}
     const [text,cls]=lines[li++],span=document.createElement('span');
     span.className='cmd-line '+cls+' is-typing';out.appendChild(span);
-    const finish=()=>{span.classList.remove('is-typing');span.classList.add('is-finished');setTimeout(addLine,text===''?45:75);};
+    const finish=()=>{span.classList.remove('is-typing');span.classList.add('is-finished');setTimeout(addLine,text===''?28:48);};
     typeWithCorrection(span,text,finish);
   }
   setTimeout(addLine,240);
@@ -145,6 +148,7 @@ if(!reduceMotion){const selector='h1,h2,h3,h4,p:not(.eyebrow):not(.open),li,.met
       setTimeout(()=>appendResponse('[SYSTEM] Please type Y before the fake virus gets bored.','warn'),300);
       setTimeout(()=>{answer.textContent='';},900);
     }else{
+      try{sessionStorage.setItem('naveenPortfolioEntered','1');}catch(e){}
       removeEventListener('keydown',key);
       appendResponse('[ACCESS GRANTED] Excellent decision. Loading portfolio...','ok');
       setTimeout(()=>{box.classList.add('done');intro.classList.add('cmd-ready');setTimeout(()=>document.getElementById('portal-enter')?.focus({preventScroll:true}),520);},520);
@@ -152,3 +156,5 @@ if(!reduceMotion){const selector='h1,h2,h3,h4,p:not(.eyebrow):not(.open),li,.met
   }
   addEventListener('keydown',key);
 })();
+
+(()=>{if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;const map={English:'English',Hindi:'हिन्दी',Telugu:'తెలుగు',Tamil:'தமிழ்',French:'Français'},cards=[...document.querySelectorAll('.language-card')],positions=[['69%','72%','-5deg'],['83%','29%','3deg'],['63%','38%','-2deg'],['79%','76%','4deg'],['57%','27%','-4deg']];cards.forEach((card,index)=>{const h=card.querySelector('h3');if(!h)return;const english=h.textContent.trim();h.dataset.english=english;h.dataset.native=map[english]||english;const[x,y,r]=positions[index%positions.length];card.style.setProperty('--script-x',x);card.style.setProperty('--script-y',y);card.style.setProperty('--script-r',r)});const sleep=ms=>new Promise(r=>setTimeout(r,ms));async function write(el,text,speed){el.textContent='';el.classList.add('language-typing');for(let i=1;i<=text.length;i++){el.textContent=text.slice(0,i);await sleep(speed)}el.classList.remove('language-typing')}async function erase(el,speed){el.classList.add('language-typing');while(el.textContent.length){el.textContent=el.textContent.slice(0,-1);await sleep(speed)}el.classList.remove('language-typing')}async function animate(card){if(card.dataset.langDone)return;card.dataset.langDone='1';const h=card.querySelector('h3');await write(h,h.dataset.native,72);await sleep(400);await erase(h,36);await sleep(110);await write(h,h.dataset.english,56);h.classList.add('language-complete')}const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){animate(e.target);io.unobserve(e.target)}}),{threshold:.25});cards.forEach(c=>io.observe(c))})();
