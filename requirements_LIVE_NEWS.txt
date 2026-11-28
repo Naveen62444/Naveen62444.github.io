@@ -1,0 +1,6 @@
+# Merge these with the existing requirements.txt
+streamlit>=1.39
+pandas>=2.2
+requests>=2.32
+transformers>=4.45
+torch>=2.3
